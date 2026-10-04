@@ -17,6 +17,6 @@ app.MapGet("/search", async (ChromaClient chroma) =>
 });
 ```
 
-The connection string is the address of the server, like `http://localhost:8000` or `Endpoint=http://localhost:8000`; the settings are read from `Aspire:Chroma` (`DisableHealthChecks`, `HealthCheckTimeout`). `AddKeyedChromaClient` registers a keyed client.
+The connection string is the address of the server, like `http://localhost:8000` or `Endpoint=http://localhost:8000`; the settings are read from `Aspire:Chroma:Client` (`DisableHealthChecks`, `HealthCheckTimeout`). `AddKeyedChromaClient` registers a keyed client, with its settings in `Aspire:Chroma:Client:{name}`.
 
 This is the Chroma client integration proposed to the Community Toolkit for Aspire ([CommunityToolkit/Aspire#2219](https://github.com/CommunityToolkit/Aspire/pull/2219)), published by ChromaDotNet until the toolkit ships it as `CommunityToolkit.Aspire.Chroma`. The API and namespaces are the same, so moving to that package only changes the package reference. Not affiliated with the .NET Foundation or Chroma.

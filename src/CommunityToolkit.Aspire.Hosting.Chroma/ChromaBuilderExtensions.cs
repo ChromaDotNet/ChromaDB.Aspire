@@ -10,6 +10,9 @@ public static class ChromaBuilderExtensions
 {
     private const int ChromaPort = 8000;
 
+    // The persist_path of the configuration in the chromadb/chroma 1.x image.
+    private const string DataTarget = "/data";
+
     /// <summary>
     /// Adds a ChromaDB container resource to the application model.
     /// The default image is <inheritdoc cref="ChromaContainerImageTags.Image"/> and the tag is <inheritdoc cref="ChromaContainerImageTags.Tag"/>.
@@ -48,7 +51,7 @@ public static class ChromaBuilderExtensions
     {
         ArgumentNullException.ThrowIfNull(builder);
 
-        return builder.WithVolume(name ?? VolumeNameGenerator.Generate(builder, "data"), "/chroma/chroma");
+        return builder.WithVolume(name ?? VolumeNameGenerator.Generate(builder, "data"), DataTarget);
     }
 
     /// <summary>
@@ -63,6 +66,6 @@ public static class ChromaBuilderExtensions
         ArgumentNullException.ThrowIfNull(builder);
         ArgumentException.ThrowIfNullOrEmpty(source);
 
-        return builder.WithBindMount(source, "/chroma/chroma");
+        return builder.WithBindMount(source, DataTarget);
     }
 }

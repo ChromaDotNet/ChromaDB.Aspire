@@ -74,7 +74,7 @@ public class AddChromaTests
         var containerResource = Assert.Single(appModel.Resources.OfType<ChromaResource>());
         var mountAnnotation = Assert.Single(containerResource.Annotations.OfType<ContainerMountAnnotation>());
         Assert.Equal("chroma-data", mountAnnotation.Source);
-        Assert.Equal("/chroma/chroma", mountAnnotation.Target);
+        Assert.Equal("/data", mountAnnotation.Target);
         Assert.Equal(ContainerMountType.Volume, mountAnnotation.Type);
     }
 
@@ -94,7 +94,7 @@ public class AddChromaTests
         var mountAnnotation = Assert.Single(containerResource.Annotations.OfType<ContainerMountAnnotation>());
         Assert.NotNull(mountAnnotation.Source);
         Assert.Equal(Path.GetFullPath("./chroma-data").Replace('\\', '/'), mountAnnotation.Source.Replace('\\', '/'));
-        Assert.Equal("/chroma/chroma", mountAnnotation.Target);
+        Assert.Equal("/data", mountAnnotation.Target);
         Assert.Equal(ContainerMountType.BindMount, mountAnnotation.Type);
     }
 }

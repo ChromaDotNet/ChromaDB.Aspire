@@ -51,7 +51,7 @@ public class ChromaClientExtensionsTests
 
         var healthCheckService = host.Services.GetRequiredService<HealthCheckService>();
         var healthCheckReport = await healthCheckService.CheckHealthAsync();
-        Assert.Contains(healthCheckReport.Entries, x => x.Key == DefaultConnectionName);
+        Assert.Contains(healthCheckReport.Entries, x => x.Key == "Chroma");
     }
 
     [Fact]
@@ -65,7 +65,7 @@ public class ChromaClientExtensionsTests
 
         var healthCheckService = host.Services.GetRequiredService<HealthCheckService>();
         var healthCheckReport = await healthCheckService.CheckHealthAsync();
-        Assert.Contains(healthCheckReport.Entries, x => x.Key == $"{DefaultConnectionName}_check");
+        Assert.Contains(healthCheckReport.Entries, x => x.Key == $"Chroma_{DefaultConnectionName}");
     }
 
     [Theory]

@@ -82,7 +82,7 @@ public static class AspireChromaExtensions
 
         if (!settings.DisableHealthChecks)
         {
-            var healthCheckName = serviceKey is null ? connectionName : $"{connectionName}_check";
+            var healthCheckName = serviceKey is null ? "Chroma" : $"Chroma_{connectionName}";
 
             builder.TryAddHealthCheck(new HealthCheckRegistration(
                 healthCheckName,

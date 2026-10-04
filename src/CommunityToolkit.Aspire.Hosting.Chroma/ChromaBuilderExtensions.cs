@@ -32,7 +32,7 @@ public static class ChromaBuilderExtensions
              .WithImage(ChromaContainerImageTags.Image, ChromaContainerImageTags.Tag)
              .WithImageRegistry(ChromaContainerImageTags.Registry)
              .WithHttpEndpoint(targetPort: ChromaPort, port: port, name: ChromaResource.PrimaryEndpointName)
-             .WithHttpHealthCheck("/api/v1/heartbeat");
+             .WithHttpHealthCheck("/api/v2/heartbeat");
     }
 
     /// <summary>

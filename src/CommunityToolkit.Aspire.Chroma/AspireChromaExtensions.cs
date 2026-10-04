@@ -100,13 +100,8 @@ public static class AspireChromaExtensions
         }
 
         var httpClient = sp.GetRequiredService<IHttpClientFactory>().CreateClient(connectionName);
-        var endpoint = settings.Endpoint.ToString();
 
-        if (!endpoint.Contains("/api/v1", StringComparison.OrdinalIgnoreCase))
-        {
-            endpoint = endpoint.TrimEnd('/') + "/api/v1/";
-        }
-
-        return new ChromaClient(new ChromaConfigurationOptions(endpoint), httpClient);
+        // An endpoint with only the address of the server, like http://localhost:8000, gets the path of the v2 API.
+        return new ChromaClient(new ChromaConfigurationOptions(settings.Endpoint), httpClient);
     }
 }

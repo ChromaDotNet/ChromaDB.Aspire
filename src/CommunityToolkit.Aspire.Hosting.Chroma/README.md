@@ -1,6 +1,6 @@
 # CommunityToolkit.Aspire.Hosting.Chroma
 
-Provides extension methods for adding a ChromaDB resource to a .NET Aspire application model.
+Provides extension methods for adding a ChromaDB resource to a .NET Aspire application model. The resource runs the `chromadb/chroma` container image, with a health check on the `/api/v2/heartbeat` endpoint.
 
 ## Installation
 

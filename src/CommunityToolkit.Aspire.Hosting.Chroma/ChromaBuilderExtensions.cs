@@ -18,21 +18,23 @@ public static class ChromaBuilderExtensions
     /// <param name="name">The name of the resource. This name will be used as the connection string name when referenced in a dependency.</param>
     /// <param name="port">The host port to bind the underlying container to.</param>
     /// <returns>A reference to the <see cref="IResourceBuilder{T}"/>.</returns>
+    [AspireExport]
     public static IResourceBuilder<ChromaResource> AddChroma(
         this IDistributedApplicationBuilder builder,
-        string name,
+        [ResourceName] string name,
         int? port = null)
     {
         ArgumentNullException.ThrowIfNull(builder);
-        ArgumentNullException.ThrowIfNull(name);
+        ArgumentException.ThrowIfNullOrEmpty(name);
 
-        var chroma = new ChromaResource(name);
+        ChromaResource chroma = new(name);
 
         return builder.AddResource(chroma)
              .WithImage(ChromaContainerImageTags.Image, ChromaContainerImageTags.Tag)
              .WithImageRegistry(ChromaContainerImageTags.Registry)
              .WithHttpEndpoint(targetPort: ChromaPort, port: port, name: ChromaResource.PrimaryEndpointName)
-             .WithHttpHealthCheck("/api/v2/heartbeat");
+             .WithHttpHealthCheck("/api/v2/heartbeat")
+             .WithIconName("DatabaseSearch");
     }
 
     /// <summary>
@@ -41,6 +43,7 @@ public static class ChromaBuilderExtensions
     /// <param name="builder">The resource builder.</param>
     /// <param name="name">The name of the volume. Defaults to an auto-generated name based on the application and resource names.</param>
     /// <returns>The <see cref="IResourceBuilder{T}"/>.</returns>
+    [AspireExport]
     public static IResourceBuilder<ChromaResource> WithDataVolume(this IResourceBuilder<ChromaResource> builder, string? name = null)
     {
         ArgumentNullException.ThrowIfNull(builder);
@@ -54,10 +57,11 @@ public static class ChromaBuilderExtensions
     /// <param name="builder">The resource builder.</param>
     /// <param name="source">The source directory on the host to mount into the container.</param>
     /// <returns>The <see cref="IResourceBuilder{T}"/>.</returns>
+    [AspireExport]
     public static IResourceBuilder<ChromaResource> WithDataBindMount(this IResourceBuilder<ChromaResource> builder, string source)
     {
         ArgumentNullException.ThrowIfNull(builder);
-        ArgumentNullException.ThrowIfNull(source);
+        ArgumentException.ThrowIfNullOrEmpty(source);
 
         return builder.WithBindMount(source, "/chroma/chroma");
     }

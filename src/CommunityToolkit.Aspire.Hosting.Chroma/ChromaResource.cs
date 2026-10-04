@@ -1,10 +1,9 @@
-using Aspire.Hosting.ApplicationModel;
-
-namespace CommunityToolkit.Aspire.Hosting.Chroma;
+namespace Aspire.Hosting.ApplicationModel;
 
 /// <summary>
 /// A resource that represents a ChromaDB container.
 /// </summary>
+[AspireExport(ExposeProperties = true)]
 public class ChromaResource(string name) : ContainerResource(name), IResourceWithConnectionString
 {
     internal const string PrimaryEndpointName = "http";

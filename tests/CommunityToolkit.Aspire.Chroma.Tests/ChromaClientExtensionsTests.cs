@@ -1,3 +1,6 @@
+using System.Diagnostics;
+using System.Net;
+using System.Net.Sockets;
 using ChromaDB.Client;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -90,6 +93,32 @@ public class ChromaClientExtensionsTests
             ? host.Services.GetKeyedService<ChromaClient>(DefaultConnectionName)
             : host.Services.GetService<ChromaClient>();
         Assert.NotNull(client);
+    }
+
+    [Fact]
+    public async Task AddChromaClient_HealthCheckHonorsTheTimeout()
+    {
+        // A server that accepts the connection and never answers.
+        using var listener = new TcpListener(IPAddress.Loopback, 0);
+        listener.Start();
+        var accept = listener.AcceptTcpClientAsync();
+        var endpoint = $"http://127.0.0.1:{((IPEndPoint)listener.LocalEndpoint).Port}";
+
+        var builder = Host.CreateApplicationBuilder();
+        builder.Configuration.AddInMemoryCollection([
+            new KeyValuePair<string, string?>($"ConnectionStrings:{DefaultConnectionName}", endpoint)
+        ]);
+        builder.AddChromaClient(DefaultConnectionName, settings => settings.HealthCheckTimeout = 500);
+
+        using var host = builder.Build();
+
+        var healthCheckService = host.Services.GetRequiredService<HealthCheckService>();
+        var stopwatch = Stopwatch.StartNew();
+        var report = await healthCheckService.CheckHealthAsync(TestContext.Current.CancellationToken);
+        stopwatch.Stop();
+
+        Assert.Equal(HealthStatus.Unhealthy, report.Entries[DefaultConnectionName].Status);
+        Assert.True(stopwatch.Elapsed < TimeSpan.FromSeconds(10), $"The health check took {stopwatch.Elapsed}.");
     }
 
     private static HostApplicationBuilder CreateBuilder()

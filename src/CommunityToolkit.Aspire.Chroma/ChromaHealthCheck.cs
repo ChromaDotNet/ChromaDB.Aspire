@@ -14,11 +14,11 @@ internal sealed class ChromaHealthCheck(ChromaClient chromaClient) : IHealthChec
     {
         try
         {
-            await chromaClient.Heartbeat().ConfigureAwait(false);
+            await chromaClient.Heartbeat(cancellationToken).ConfigureAwait(false);
 
             return HealthCheckResult.Healthy();
         }
-        catch (Exception ex)
+        catch (Exception ex) when (!cancellationToken.IsCancellationRequested)
         {
             return new HealthCheckResult(context.Registration.FailureStatus, exception: ex);
         }

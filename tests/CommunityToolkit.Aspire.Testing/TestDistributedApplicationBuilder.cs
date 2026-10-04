@@ -1,0 +1,75 @@
+// Copied from aspire
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+
+using Aspire.Components.Common.TestUtilities;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+
+namespace Aspire.Hosting.Utils;
+
+/// <summary>
+/// DistributedApplication.CreateBuilder() creates a builder that includes configuration to read from appsettings.json.
+/// The builder has a FileSystemWatcher, which can't be cleaned up unless a DistributedApplication is built and disposed.
+/// This class wraps the builder and provides a way to automatically dispose it to prevent test failures from excessive
+/// FileSystemWatcher instances from many tests.
+/// </summary>
+public static class TestDistributedApplicationBuilder
+{
+    public static IDistributedApplicationTestingBuilder Create(DistributedApplicationOperation operation, string publisher = "manifest", string outputPath = "./", bool isDeploy = false)
+    {
+        var args = operation switch
+        {
+            DistributedApplicationOperation.Run => (string[])[],
+            DistributedApplicationOperation.Publish => [$"Publishing:Publisher={publisher}", $"Publishing:OutputPath={outputPath}", $"Publishing:Deploy={isDeploy}"],
+            _ => throw new ArgumentOutOfRangeException(nameof(operation))
+        };
+
+        return Create(args);
+    }
+
+    public static IDistributedApplicationTestingBuilder Create(params string[] args)
+    {
+        return CreateCore(args, (_) => { });
+    }
+
+    public static IDistributedApplicationTestingBuilder Create(ITestOutputHelper testOutputHelper, params string[] args)
+    {
+        return CreateCore(args, (_) => { }, testOutputHelper);
+    }
+
+    public static IDistributedApplicationTestingBuilder Create(Action<DistributedApplicationOptions>? configureOptions, ITestOutputHelper? testOutputHelper = null)
+    {
+        return CreateCore([], configureOptions, testOutputHelper);
+    }
+
+    public static IDistributedApplicationTestingBuilder CreateWithTestContainerRegistry(ITestOutputHelper testOutputHelper) =>
+        Create(o => o.ContainerRegistryOverride = ComponentTestConstants.AspireTestContainerRegistry, testOutputHelper);
+
+    private static IDistributedApplicationTestingBuilder CreateCore(string[] args, Action<DistributedApplicationOptions>? configureOptions, ITestOutputHelper? testOutputHelper = null)
+    {
+        var builder = DistributedApplicationTestingBuilder.Create(args, (applicationOptions, hostBuilderOptions) => configureOptions?.Invoke(applicationOptions));
+        
+        builder.Services.Configure<HostOptions>(options =>
+        {
+            options.ShutdownTimeout = TimeSpan.FromSeconds(90);
+        });
+
+        builder.Services.AddLogging(builder =>
+            {
+                if (testOutputHelper is not null)
+                    builder.AddXUnit(testOutputHelper);
+                else
+                    builder.AddXUnit();
+
+                if (Environment.GetEnvironmentVariable("RUNNER_DEBUG") is not null && Environment.GetEnvironmentVariable("RUNNER_DEBUG") == "1")
+                    builder.SetMinimumLevel(LogLevel.Trace);
+                else
+                    builder.SetMinimumLevel(LogLevel.Information);
+            });
+
+        builder.WithTempAspireStore();
+
+        return builder;
+    }
+}

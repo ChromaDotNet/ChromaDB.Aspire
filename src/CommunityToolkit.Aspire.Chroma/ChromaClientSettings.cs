@@ -27,6 +27,10 @@ public sealed class ChromaClientSettings
     /// </summary>
     public int? HealthCheckTimeout { get; set; }
 
+    /// <summary>
+    /// Sets <see cref="Endpoint"/> from a connection string that is either a URI or has an <c>Endpoint</c> key.
+    /// </summary>
+    /// <param name="connectionString">The connection string.</param>
     internal void ParseConnectionString(string? connectionString)
     {
         if (Uri.TryCreate(connectionString, UriKind.Absolute, out var uri))

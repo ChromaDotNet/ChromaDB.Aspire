@@ -3,6 +3,10 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace CommunityToolkit.Aspire.Chroma;
 
+/// <summary>
+/// Checks the health of a ChromaDB server with its heartbeat.
+/// </summary>
+/// <param name="chromaClient">The client of the server to check.</param>
 internal sealed class ChromaHealthCheck(ChromaClient chromaClient) : IHealthCheck
 {
     /// <inheritdoc />

@@ -1,0 +1,122 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+    branches: [main]
+
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+
+jobs:
+  # The AppHost tests start Chroma with a Linux Docker image, which isn't available on Windows GitHub-hosted runners;
+  # the TypeScript AppHost test needs the Aspire CLI, Node.js and PowerShell, which the Ubuntu runner already has.
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: |
+            8.0.x
+            9.0.x
+            10.0.x
+
+      - name: Resolve Aspire version
+        id: aspire-version
+        run: echo "version=$(dotnet msbuild Directory.Build.props -nologo -v:q -getProperty:AspireVersion)" >> "$GITHUB_OUTPUT"
+
+      - name: Install Aspire CLI
+        uses: timheuer/setup-aspire@v0.1.0
+        with:
+          version: ${{ steps.aspire-version.outputs.version }}
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 'lts/*'
+
+      - name: Build
+        run: dotnet build ChromaDB.Aspire.slnx -c Release
+
+      - name: Test the client integration
+        run: dotnet test --project tests/CommunityToolkit.Aspire.Chroma.Tests -c Release --no-build
+
+      - name: Test the hosting integration
+        run: dotnet test --project tests/CommunityToolkit.Aspire.Hosting.Chroma.Tests -c Release --no-build
+
+  # Every run packs the two packages; only a version tag publishes them, with the version set in Directory.Build.props.
+  package:
+    name: Package
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: |
+            8.0.x
+            9.0.x
+            10.0.x
+
+      - name: Pack
+        shell: bash
+        run: |
+          suffix=""
+          [[ "$GITHUB_REF" == refs/tags/v* ]] || suffix="--version-suffix ci.$GITHUB_RUN_NUMBER"
+          for p in src/CommunityToolkit.Aspire.Chroma src/CommunityToolkit.Aspire.Hosting.Chroma; do
+            dotnet pack "$p" -c Release -o nuget -p:CI=true $suffix
+          done
+          if [[ "$GITHUB_REF" == refs/tags/v* ]]; then
+            version="${GITHUB_REF_NAME#v}"
+            for id in ChromaDotNet.Aspire.Client ChromaDotNet.Aspire.Hosting; do
+              if [[ ! -f "nuget/$id.$version.nupkg" ]]; then
+                echo "The tag $GITHUB_REF_NAME does not match the version in Directory.Build.props:" >&2
+                ls nuget >&2
+                exit 1
+              fi
+            done
+          fi
+
+      - name: Upload
+        uses: actions/upload-artifact@v6
+        with:
+          name: nuget-packages
+          if-no-files-found: error
+          path: nuget/*.nupkg
+
+  # NuGet trusted publishing: the NUGET_USER variable names the nuget.org account with a trusted publishing policy
+  # for this repository, this workflow and the nuget environment.
+  publish:
+    name: Publish
+    if: startsWith(github.ref, 'refs/tags/v') && vars.NUGET_USER != ''
+    needs: package
+    runs-on: ubuntu-latest
+    environment: nuget
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Download
+        uses: actions/download-artifact@v7
+        with:
+          name: nuget-packages
+
+      - name: NuGet login
+        id: login
+        uses: NuGet/login@v1
+        with:
+          user: ${{ vars.NUGET_USER }}
+
+      - name: Publish to NuGet.org
+        run: >
+          dotnet nuget push ./*.nupkg
+          --source "https://api.nuget.org/v3/index.json"
+          --api-key ${{ steps.login.outputs.NUGET_API_KEY }}

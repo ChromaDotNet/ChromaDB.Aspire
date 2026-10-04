@@ -65,6 +65,33 @@ public class ChromaClientExtensionsTests
         Assert.Contains(healthCheckReport.Entries, x => x.Key == $"{DefaultConnectionName}_check");
     }
 
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void AddChromaClient_WorksWithoutAnHttpClientFactoryRegisteredByTheApp(bool useKeyed)
+    {
+        var builder = Host.CreateApplicationBuilder();
+        builder.Configuration.AddInMemoryCollection([
+            new KeyValuePair<string, string?>($"ConnectionStrings:{DefaultConnectionName}", DefaultConnectionString)
+        ]);
+
+        if (useKeyed)
+        {
+            builder.AddKeyedChromaClient(DefaultConnectionName);
+        }
+        else
+        {
+            builder.AddChromaClient(DefaultConnectionName);
+        }
+
+        using var host = builder.Build();
+
+        var client = useKeyed
+            ? host.Services.GetKeyedService<ChromaClient>(DefaultConnectionName)
+            : host.Services.GetService<ChromaClient>();
+        Assert.NotNull(client);
+    }
+
     private static HostApplicationBuilder CreateBuilder()
     {
         var builder = Host.CreateApplicationBuilder();

@@ -68,6 +68,9 @@ public static class AspireChromaExtensions
 
         configureSettings?.Invoke(settings);
 
+        // The client takes the HttpClient of this name from IHttpClientFactory.
+        builder.Services.AddHttpClient(connectionName);
+
         if (serviceKey is null)
         {
             builder.Services.AddSingleton<ChromaClient>(sp => CreateClient(sp, settings, connectionName));

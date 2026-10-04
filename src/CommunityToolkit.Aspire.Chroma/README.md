@@ -47,9 +47,13 @@ The client can be configured using connection strings or settings. The connectio
   },
   "Aspire": {
     "Chroma": {
-      "DisableHealthChecks": false,
-      "HealthCheckTimeout": 5000
+      "Client": {
+        "DisableHealthChecks": false,
+        "HealthCheckTimeout": 5000
+      }
     }
   }
 }
 ```
+
+A keyed client reads `Aspire:Chroma:Client:{name}`.

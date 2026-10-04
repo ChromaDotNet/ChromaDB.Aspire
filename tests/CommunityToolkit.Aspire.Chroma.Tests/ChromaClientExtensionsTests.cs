@@ -121,6 +121,36 @@ public class ChromaClientExtensionsTests
         Assert.True(stopwatch.Elapsed < TimeSpan.FromSeconds(10), $"The health check took {stopwatch.Elapsed}.");
     }
 
+    // The settings are read from Aspire:Chroma:Client, and from Aspire:Chroma:Client:{name} for a keyed client,
+    // like the other client integrations.
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task SettingsAreReadFromTheConfiguration(bool useKeyed)
+    {
+        var builder = CreateBuilder();
+        var section = useKeyed ? $"Aspire:Chroma:Client:{DefaultConnectionName}" : "Aspire:Chroma:Client";
+        builder.Configuration.AddInMemoryCollection([
+            new KeyValuePair<string, string?>($"{section}:DisableHealthChecks", "true")
+        ]);
+        builder.Services.AddHealthChecks();
+
+        if (useKeyed)
+        {
+            builder.AddKeyedChromaClient(DefaultConnectionName);
+        }
+        else
+        {
+            builder.AddChromaClient(DefaultConnectionName);
+        }
+
+        using var host = builder.Build();
+
+        var healthCheckService = host.Services.GetRequiredService<HealthCheckService>();
+        var report = await healthCheckService.CheckHealthAsync(TestContext.Current.CancellationToken);
+        Assert.Empty(report.Entries);
+    }
+
     private static HostApplicationBuilder CreateBuilder()
     {
         var builder = Host.CreateApplicationBuilder();

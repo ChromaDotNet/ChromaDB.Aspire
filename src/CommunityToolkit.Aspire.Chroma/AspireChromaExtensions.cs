@@ -13,7 +13,7 @@ namespace Microsoft.Extensions.Hosting;
 /// </summary>
 public static class AspireChromaExtensions
 {
-    private const string DefaultConfigSectionName = "Aspire:Chroma";
+    private const string DefaultConfigSectionName = "Aspire:Chroma:Client";
 
     /// <summary>
     /// Registers <see cref="ChromaClient"/> as a singleton in the services collection.

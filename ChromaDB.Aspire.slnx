@@ -1,0 +1,16 @@
+<Solution>
+  <Folder Name="/examples/">
+    <Project Path="examples/chromadb/CommunityToolkit.Aspire.Hosting.Chroma.ApiService/CommunityToolkit.Aspire.Hosting.Chroma.ApiService.csproj" />
+    <Project Path="examples/chromadb/CommunityToolkit.Aspire.Hosting.Chroma.AppHost/CommunityToolkit.Aspire.Hosting.Chroma.AppHost.csproj" />
+    <Project Path="examples/chromadb/CommunityToolkit.Aspire.Hosting.Chroma.ServiceDefaults/CommunityToolkit.Aspire.Hosting.Chroma.ServiceDefaults.csproj" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/CommunityToolkit.Aspire.Chroma/CommunityToolkit.Aspire.Chroma.csproj" />
+    <Project Path="src/CommunityToolkit.Aspire.Hosting.Chroma/CommunityToolkit.Aspire.Hosting.Chroma.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/CommunityToolkit.Aspire.Chroma.Tests/CommunityToolkit.Aspire.Chroma.Tests.csproj" />
+    <Project Path="tests/CommunityToolkit.Aspire.Hosting.Chroma.Tests/CommunityToolkit.Aspire.Hosting.Chroma.Tests.csproj" />
+    <Project Path="tests/CommunityToolkit.Aspire.Testing/CommunityToolkit.Aspire.Testing.csproj" />
+  </Folder>
+</Solution>

@@ -4,7 +4,8 @@
     <TargetFrameworks>$(AllTargetFrameworks)</TargetFrameworks>
     <IsPackable>true</IsPackable>
 
-    <DocsPath>README.md</DocsPath>
+    <!-- ChromaDB.Aspire: the README of each package names our package ids, not the ones of the Community Toolkit. -->
+    <DocsPath>$(MSBuildThisFileDirectory)..\docs\packages\$(MSBuildProjectName).md</DocsPath>
     <DebugType>embedded</DebugType>
     <ContinuousIntegrationBuild Condition="'$(CI)' == 'true'">true</ContinuousIntegrationBuild>
     <IsPreview>false</IsPreview>
@@ -13,15 +14,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.DotNet.GenAPI.Task" PrivateAssets="All" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Include="$(DocsPath)">
       <Pack>true</Pack>
-      <PackagePath>/</PackagePath>
+      <PackagePath>README.md</PackagePath>
     </None>
-    <None Include="../../docs/images/nuget.png">
+    <None Include="../../LICENSE">
       <Pack>true</Pack>
       <PackagePath>/</PackagePath>
     </None>

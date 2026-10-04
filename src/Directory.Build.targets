@@ -2,38 +2,28 @@
   <Import Project="..\Directory.Build.targets" />
 
   <PropertyGroup>
-    <Authors>Microsoft.Toolkit,dotnetfoundation,Community Toolkit</Authors>
-    <Company>.NET Foundation</Company>
-    <Copyright>(c) .NET Foundation and Contributors. All rights reserved.</Copyright>
+    <!-- ChromaDB.Aspire publishes the Chroma integrations of CommunityToolkit/Aspire under its own package ids. -->
+    <PackageId Condition="'$(MSBuildProjectName)' == 'CommunityToolkit.Aspire.Hosting.Chroma'">ChromaDotNet.Aspire.Hosting</PackageId>
+    <PackageId Condition="'$(MSBuildProjectName)' == 'CommunityToolkit.Aspire.Chroma'">ChromaDotNet.Aspire.Client</PackageId>
+    <PackageDescription>$(Description) Built from the Chroma integration proposed to the Community Toolkit for Aspire, until it ships there. Not affiliated with the .NET Foundation or Chroma.</PackageDescription>
+    <Authors>ChromaDotNet contributors</Authors>
+    <Copyright>(c) .NET Foundation and Contributors. (c) 2026 ChromaDotNet contributors.</Copyright>
     <NeutralLanguage>en</NeutralLanguage>
-    <Product>CommunityToolkit.Aspire</Product>
+    <Product>ChromaDB.Aspire</Product>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/CommunityToolkit/Aspire</PackageProjectUrl>
-    <PackageIcon>nuget.png</PackageIcon>
-    <RepositoryUrl>https://github.com/CommunityToolkit/Aspire</RepositoryUrl>
-    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageProjectUrl>https://github.com/ChromaDotNet/ChromaDB.Aspire</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/ChromaDotNet/ChromaDB.Aspire</RepositoryUrl>
 
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
 
-    <PackageReadmeFile>$(DocsPath)</PackageReadmeFile>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageOutputPath>../../nuget</PackageOutputPath>
-    <PackageTags>aspire integration communitytoolkit dotnetcommunitytoolkit $(AdditionalPackageTags)</PackageTags>
+    <PackageTags>aspire integration $(AdditionalPackageTags)</PackageTags>
     <PackageTags Condition="'$(EnableAspireIntegrationAnalyzers)' == 'true'
                             and '$(IsAspirePolyglotCompatible)' != 'false'
                             and !$([System.String]::Concat(' ', '$(PackageTags)', ' ').Contains(' polyglot '))">$([System.String]::Concat('$(PackageTags)', ' polyglot').Trim())</PackageTags>
     
-    <!-- If the project is packable, we generate its API surface in a separate file to be used by the API review process. -->
-    <GenAPITargetPath Condition="'$(IsPackable)' == 'true'">$(MSBuildProjectDirectory)/api/$(AssemblyName).cs</GenAPITargetPath>
-
   </PropertyGroup>
-
-  <ItemGroup>
-    <Compile Remove="$(GenAPITargetPath)" />
-  </ItemGroup>
-
-  <Target Name="CreateGenAPITargetPathFolder" BeforeTargets="GenAPIGenerateReferenceAssemblySource">
-    <MakeDir Directories="$(MSBuildProjectDirectory)/api" Condition="!Exists('$(MSBuildProjectDirectory)/api')" />
-  </Target>
 
   <!--
     Create local branding

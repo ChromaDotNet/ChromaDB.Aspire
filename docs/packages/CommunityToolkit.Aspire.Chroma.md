@@ -1,6 +1,10 @@
+[![ChromaDotNet](https://raw.githubusercontent.com/ChromaDotNet/.github/main/assets/logo-64.png)](https://chromadotnet.org)
+
 # ChromaDotNet.Aspire.Client
 
 Registers a `ChromaClient` of [ChromaDotNet.Client](https://www.nuget.org/packages/ChromaDotNet.Client) in an Aspire service, with a health check, traces and metrics.
+
+Website: [chromadotnet.org](https://chromadotnet.org)
 
 ```bash
 dotnet add package ChromaDotNet.Aspire.Client

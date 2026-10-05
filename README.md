@@ -1,3 +1,5 @@
+[![ChromaDotNet](https://raw.githubusercontent.com/ChromaDotNet/.github/main/assets/logo-64.png)](https://chromadotnet.org)
+
 # ChromaDB.Aspire
 
 [Aspire](https://aspire.dev) integrations for [Chroma](https://www.trychroma.com/):
@@ -15,6 +17,8 @@ builder.AddProject<Projects.ApiService>("api").WithReference(chroma).WaitFor(chr
 // Service
 builder.AddChromaClient("chroma");
 ```
+
+Website: [chromadotnet.org](https://chromadotnet.org)
 
 ## Why this repository
 

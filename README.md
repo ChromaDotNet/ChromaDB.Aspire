@@ -5,7 +5,7 @@
 | Package | Use |
 |---|---|
 | `ChromaDotNet.Aspire.Hosting` | AppHost: `AddChroma`, `WithDataVolume`, `WithDataBindMount`. Image `chromadb/chroma:1.5.9`, health check on `/api/v2/heartbeat`. |
-| `ChromaDotNet.Aspire.Client` | Service: `AddChromaClient`, `AddKeyedChromaClient`, with [ChromaDotNet.Client](https://github.com/ChromaDotNet/ChromaDB.Client), a health check, traces and metrics. Connects to a Chroma server or to Chroma Cloud (`Endpoint=https://api.trychroma.com;Token=...;Tenant=...;Database=...`). |
+| `ChromaDotNet.Aspire.Client` | Service: `AddChromaClient`, `AddKeyedChromaClient`, with [ChromaDB.Client](https://github.com/ChromaDotNet/ChromaDB.Client), a health check, traces and metrics. Connects to a Chroma server or to Chroma Cloud (`Endpoint=https://api.trychroma.com;Token=...;Tenant=...;Database=...`). |
 
 ```csharp
 // AppHost

@@ -20,6 +20,7 @@
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
 
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageIcon>icon.png</PackageIcon>
     <PackageOutputPath>../../nuget</PackageOutputPath>
     <PackageTags>aspire integration $(AdditionalPackageTags)</PackageTags>
     <PackageTags Condition="'$(MSBuildProjectName)' == 'CommunityToolkit.Aspire.Chroma'">$(PackageTags) chroma chroma-cloud</PackageTags>
@@ -28,6 +29,10 @@
                             and !$([System.String]::Concat(' ', '$(PackageTags)', ' ').Contains(' polyglot '))">$([System.String]::Concat('$(PackageTags)', ' polyglot').Trim())</PackageTags>
     
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="../../icon.png" Visible="false" Pack="true" PackagePath="" />
+  </ItemGroup>
 
   <!--
     Create local branding

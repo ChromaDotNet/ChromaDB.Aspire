@@ -22,7 +22,7 @@ The code is the Chroma integration proposed to the Community Toolkit for Aspire 
 
 Every change is made in the pull request first; `eng/sync-from-toolkit.sh` copies the Chroma folders here. The build and test files come from CommunityToolkit/Aspire.
 
-Not affiliated with the .NET Foundation, the Community Toolkit or Chroma.
+This is a community project. It is not affiliated with or endorsed by the .NET Foundation, the Community Toolkit or Chroma.
 
 ## License
 

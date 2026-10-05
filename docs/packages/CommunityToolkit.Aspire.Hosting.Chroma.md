@@ -17,4 +17,4 @@ builder.AddProject<Projects.ApiService>("api")
 
 `WithDataVolume` and `WithDataBindMount` mount `/data`, where Chroma keeps its database.
 
-This is the Chroma hosting integration proposed to the Community Toolkit for Aspire ([CommunityToolkit/Aspire#2219](https://github.com/CommunityToolkit/Aspire/pull/2219)), published by ChromaDotNet until the toolkit ships it as `CommunityToolkit.Aspire.Hosting.Chroma`. The API and namespaces are the same, so moving to that package only changes the package reference. Not affiliated with the .NET Foundation or Chroma.
+This is the Chroma hosting integration proposed to the Community Toolkit for Aspire ([CommunityToolkit/Aspire#2219](https://github.com/CommunityToolkit/Aspire/pull/2219)), published by ChromaDotNet until the toolkit ships it as `CommunityToolkit.Aspire.Hosting.Chroma`. The API and namespaces are the same, so moving to that package only changes the package reference. Community project, not affiliated with the .NET Foundation or Chroma.

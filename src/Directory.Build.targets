@@ -5,7 +5,10 @@
     <!-- ChromaDB.Aspire publishes the Chroma integrations of CommunityToolkit/Aspire under its own package ids. -->
     <PackageId Condition="'$(MSBuildProjectName)' == 'CommunityToolkit.Aspire.Hosting.Chroma'">ChromaDotNet.Aspire.Hosting</PackageId>
     <PackageId Condition="'$(MSBuildProjectName)' == 'CommunityToolkit.Aspire.Chroma'">ChromaDotNet.Aspire.Client</PackageId>
-    <PackageDescription>$(Description) Built from the Chroma integration proposed to the Community Toolkit for Aspire, until it ships there. Not affiliated with the .NET Foundation or Chroma.</PackageDescription>
+    <_ChromaDotNetNote>Built from the Chroma integration proposed to the Community Toolkit for Aspire, until it ships there. Not affiliated with the .NET Foundation or Chroma.</_ChromaDotNetNote>
+    <PackageDescription>$(Description) $(_ChromaDotNetNote)</PackageDescription>
+    <!-- The client integration connects to Chroma Cloud too; the hosting integration runs a Chroma container. -->
+    <PackageDescription Condition="'$(MSBuildProjectName)' == 'CommunityToolkit.Aspire.Chroma'">$(Description) It connects to a Chroma server or to Chroma Cloud. $(_ChromaDotNetNote)</PackageDescription>
     <Authors>ChromaDotNet contributors</Authors>
     <Copyright>(c) .NET Foundation and Contributors. (c) 2026 ChromaDotNet contributors.</Copyright>
     <NeutralLanguage>en</NeutralLanguage>
@@ -19,6 +22,7 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageOutputPath>../../nuget</PackageOutputPath>
     <PackageTags>aspire integration $(AdditionalPackageTags)</PackageTags>
+    <PackageTags Condition="'$(MSBuildProjectName)' == 'CommunityToolkit.Aspire.Chroma'">$(PackageTags) chroma chroma-cloud</PackageTags>
     <PackageTags Condition="'$(EnableAspireIntegrationAnalyzers)' == 'true'
                             and '$(IsAspirePolyglotCompatible)' != 'false'
                             and !$([System.String]::Concat(' ', '$(PackageTags)', ' ').Contains(' polyglot '))">$([System.String]::Concat('$(PackageTags)', ' polyglot').Trim())</PackageTags>

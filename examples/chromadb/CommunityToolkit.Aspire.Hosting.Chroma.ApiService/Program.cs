@@ -14,10 +14,10 @@ app.MapDefaultEndpoints();
 app.MapPost("/create", async (ChromaClient chroma) =>
 {
     var collectionName = $"movies_{Guid.NewGuid():N}";
-    var collection = await chroma.CreateCollection(collectionName);
+    var collection = await chroma.CreateCollectionAsync(collectionName);
     var collectionClient = chroma.GetCollectionClient(collection);
 
-    await collectionClient.Add(
+    await collectionClient.AddAsync(
         ids: ["1", "2"],
         embeddings: [new ReadOnlyMemory<float>([0.1f, 0.2f, 0.3f]), new ReadOnlyMemory<float>([0.4f, 0.5f, 0.6f])],
         metadatas: [
@@ -27,14 +27,14 @@ app.MapPost("/create", async (ChromaClient chroma) =>
         documents: ["A thief who enters the dreams of others.", "A group of explorers travel through a wormhole."]
     );
 
-    return Results.Ok(new { Collection = collectionName, Count = await collectionClient.Count() });
+    return Results.Ok(new { Collection = collectionName, Count = await collectionClient.CountAsync() });
 });
 
 app.MapGet("/query", async (ChromaClient chroma, string collectionName) =>
 {
-    var collectionClient = chroma.GetCollectionClient(await chroma.GetCollection(collectionName));
+    var collectionClient = chroma.GetCollectionClient(await chroma.GetCollectionAsync(collectionName));
 
-    var results = await collectionClient.Query(
+    var results = await collectionClient.QueryAsync(
         queryEmbeddings: new ReadOnlyMemory<float>([0.1f, 0.2f, 0.3f]),
         nResults: 1,
         include: ChromaQueryInclude.Metadatas | ChromaQueryInclude.Documents | ChromaQueryInclude.Distances

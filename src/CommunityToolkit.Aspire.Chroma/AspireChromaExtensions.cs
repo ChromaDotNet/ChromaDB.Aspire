@@ -1,10 +1,12 @@
 using Aspire;
-using System.Net.Http;
 using ChromaDB.Client;
+using ChromaDB.Client.DependencyInjection;
 using CommunityToolkit.Aspire.Chroma;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Trace;
 
 namespace Microsoft.Extensions.Hosting;
 
@@ -68,7 +70,7 @@ public static class AspireChromaExtensions
 
         configureSettings?.Invoke(settings);
 
-        // The client takes the HttpClient of this name from IHttpClientFactory.
+        // The client sends each request with the current handler of the HttpClient of this name of IHttpClientFactory.
         builder.Services.AddHttpClient(connectionName);
 
         if (serviceKey is null)
@@ -78,6 +80,18 @@ public static class AspireChromaExtensions
         else
         {
             builder.Services.AddKeyedSingleton<ChromaClient>(serviceKey, (sp, key) => CreateClient(sp, settings, connectionName));
+        }
+
+        if (!settings.DisableTracing)
+        {
+            builder.Services.AddOpenTelemetry()
+                .WithTracing(tracing => tracing.AddSource(ChromaTelemetry.ActivitySourceName));
+        }
+
+        if (!settings.DisableMetrics)
+        {
+            builder.Services.AddOpenTelemetry()
+                .WithMetrics(metrics => metrics.AddMeter(ChromaTelemetry.MeterName));
         }
 
         if (!settings.DisableHealthChecks)
@@ -102,9 +116,9 @@ public static class AspireChromaExtensions
             throw new InvalidOperationException($"ChromaDB endpoint is not configured for connection name '{connectionName}'.");
         }
 
-        var httpClient = sp.GetRequiredService<IHttpClientFactory>().CreateClient(connectionName);
-
         // An endpoint with only the address of the server, like http://localhost:8000, gets the path of the v2 API.
-        return new ChromaClient(new ChromaConfigurationOptions(settings.Endpoint), httpClient);
+        var options = new ChromaConfigurationOptions(settings.Endpoint, tenant: settings.Tenant, database: settings.Database, chromaToken: settings.Token);
+
+        return sp.CreateChromaClient(options, connectionName);
     }
 }

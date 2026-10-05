@@ -51,8 +51,8 @@ public class ChromaFunctionalTests(ITestOutputHelper testOutputHelper)
                 {
                     using var host = await StartClientHostAsync(chroma1.Resource);
                     var chromaClient = host.Services.GetRequiredService<ChromaClient>();
-                    var collection = await chromaClient.CreateCollection(CollectionName);
-                    await chromaClient.GetCollectionClient(collection).Add(["1"], embeddings: [new([0.1f, 0.2f, 0.3f])], documents: ["kept"]);
+                    var collection = await chromaClient.CreateCollectionAsync(CollectionName);
+                    await chromaClient.GetCollectionClient(collection).AddAsync(["1"], embeddings: [new([0.1f, 0.2f, 0.3f])], documents: ["kept"]);
                 }
                 finally
                 {
@@ -84,8 +84,8 @@ public class ChromaFunctionalTests(ITestOutputHelper testOutputHelper)
                 {
                     using var host = await StartClientHostAsync(chroma2.Resource);
                     var chromaClient = host.Services.GetRequiredService<ChromaClient>();
-                    var collectionClient = chromaClient.GetCollectionClient(await chromaClient.GetCollection(CollectionName));
-                    var entry = await collectionClient.Get("1");
+                    var collectionClient = chromaClient.GetCollectionClient(await chromaClient.GetCollectionAsync(CollectionName));
+                    var entry = await collectionClient.GetAsync("1");
                     Assert.NotNull(entry);
                     Assert.Equal("kept", entry.Document);
                 }

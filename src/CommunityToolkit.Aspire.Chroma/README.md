@@ -49,7 +49,9 @@ The client can be configured using connection strings or settings. The connectio
     "Chroma": {
       "Client": {
         "DisableHealthChecks": false,
-        "HealthCheckTimeout": 5000
+        "HealthCheckTimeout": 5000,
+        "DisableTracing": false,
+        "DisableMetrics": false
       }
     }
   }
@@ -57,3 +59,17 @@ The client can be configured using connection strings or settings. The connectio
 ```
 
 A keyed client reads `Aspire:Chroma:Client:{name}`.
+
+## Chroma Cloud
+
+The connection string also takes the token, the tenant and the database, as Chroma Cloud needs them:
+
+```
+Endpoint=https://api.trychroma.com;Token=<API key>;Tenant=<tenant>;Database=<database>
+```
+
+The token goes in the `X-Chroma-Token` header. The settings `Token`, `Tenant` and `Database` in `Aspire:Chroma:Client` give the values the connection string does not have, and the settings given in code win over both. In the AppHost, `builder.AddConnectionString("chroma")` passes the connection string to the services that reference it.
+
+## Traces and metrics
+
+The integration adds the traces and the metrics of ChromaDotNet.Client to OpenTelemetry: a span for each operation, like `query movies`, and the histogram `db.client.operation.duration`. `DisableTracing` and `DisableMetrics` turn them off.

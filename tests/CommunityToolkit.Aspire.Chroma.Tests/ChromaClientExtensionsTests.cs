@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 using ChromaDB.Client;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -117,7 +118,7 @@ public class ChromaClientExtensionsTests
         var report = await healthCheckService.CheckHealthAsync(TestContext.Current.CancellationToken);
         stopwatch.Stop();
 
-        Assert.Equal(HealthStatus.Unhealthy, report.Entries[DefaultConnectionName].Status);
+        Assert.Equal(HealthStatus.Unhealthy, report.Entries["Chroma"].Status);
         Assert.True(stopwatch.Elapsed < TimeSpan.FromSeconds(10), $"The health check took {stopwatch.Elapsed}.");
     }
 
@@ -151,6 +152,100 @@ public class ChromaClientExtensionsTests
         Assert.Empty(report.Entries);
     }
 
+    // A connection string like the one of Chroma Cloud: the requests go to its tenant and database, with the token in X-Chroma-Token.
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task ConnectionStringWithTokenTenantAndDatabase(bool useKeyed)
+    {
+        List<HttpRequestMessage> requests = [];
+        var builder = Host.CreateApplicationBuilder();
+        builder.Configuration.AddInMemoryCollection([
+            new KeyValuePair<string, string?>($"ConnectionStrings:{DefaultConnectionName}", "Endpoint=https://chroma.example;Token=secret;Tenant=my_tenant;Database=my_database")
+        ]);
+
+        if (useKeyed)
+        {
+            builder.AddKeyedChromaClient(DefaultConnectionName);
+        }
+        else
+        {
+            builder.AddChromaClient(DefaultConnectionName);
+        }
+
+        builder.Services.AddHttpClient(DefaultConnectionName).ConfigurePrimaryHttpMessageHandler(() => new RecordingHandler(requests));
+
+        using var host = builder.Build();
+
+        var client = useKeyed
+            ? host.Services.GetRequiredKeyedService<ChromaClient>(DefaultConnectionName)
+            : host.Services.GetRequiredService<ChromaClient>();
+        await client.ListCollectionsAsync(cancellationToken: TestContext.Current.CancellationToken);
+
+        var request = Assert.Single(requests);
+        Assert.Equal("https://chroma.example/api/v2/tenants/my_tenant/databases/my_database/collections", request.RequestUri!.GetLeftPart(UriPartial.Path));
+        Assert.Equal("secret", Assert.Single(request.Headers.GetValues("X-Chroma-Token")));
+    }
+
+    // The values the connection string does not have come from the configuration, and the settings given in code win over both.
+    [Fact]
+    public async Task TokenTenantAndDatabaseFromTheSettings()
+    {
+        List<HttpRequestMessage> requests = [];
+        var builder = Host.CreateApplicationBuilder();
+        builder.Configuration.AddInMemoryCollection([
+            new KeyValuePair<string, string?>($"ConnectionStrings:{DefaultConnectionName}", "Endpoint=https://chroma.example;Tenant=from_string"),
+            new KeyValuePair<string, string?>("Aspire:Chroma:Client:Token", "from_section"),
+            new KeyValuePair<string, string?>("Aspire:Chroma:Client:Database", "from_section")
+        ]);
+        builder.AddChromaClient(DefaultConnectionName, settings => settings.Tenant = "from_code");
+        builder.Services.AddHttpClient(DefaultConnectionName).ConfigurePrimaryHttpMessageHandler(() => new RecordingHandler(requests));
+
+        using var host = builder.Build();
+
+        await host.Services.GetRequiredService<ChromaClient>().ListCollectionsAsync(cancellationToken: TestContext.Current.CancellationToken);
+
+        var request = Assert.Single(requests);
+        Assert.Equal("https://chroma.example/api/v2/tenants/from_code/databases/from_section/collections", request.RequestUri!.GetLeftPart(UriPartial.Path));
+        Assert.Equal("from_section", Assert.Single(request.Headers.GetValues("X-Chroma-Token")));
+    }
+
+    [Fact]
+    public void ConnectionStringWithAnUnknownKeyThrows()
+    {
+        var builder = Host.CreateApplicationBuilder();
+        builder.Configuration.AddInMemoryCollection([
+            new KeyValuePair<string, string?>($"ConnectionStrings:{DefaultConnectionName}", "Endpoint=https://chroma.example;ApiKey=secret")
+        ]);
+
+        Assert.Throws<ArgumentException>(() => builder.AddChromaClient(DefaultConnectionName));
+    }
+
+    // The client is a singleton: its requests go through the current handler of IHttpClientFactory, which the factory renews.
+    [Fact]
+    public async Task RequestsUseTheCurrentHandlerOfTheFactory()
+    {
+        var handlers = 0;
+        var builder = CreateBuilder();
+        builder.AddChromaClient(DefaultConnectionName);
+        builder.Services.AddHttpClient(DefaultConnectionName)
+            .SetHandlerLifetime(TimeSpan.FromSeconds(1))
+            .ConfigurePrimaryHttpMessageHandler(() =>
+            {
+                Interlocked.Increment(ref handlers);
+                return new RecordingHandler([]);
+            });
+
+        using var host = builder.Build();
+
+        var client = host.Services.GetRequiredService<ChromaClient>();
+        await client.ListCollectionsAsync(cancellationToken: TestContext.Current.CancellationToken);
+        await Task.Delay(TimeSpan.FromSeconds(2), TestContext.Current.CancellationToken);
+        await client.ListCollectionsAsync(cancellationToken: TestContext.Current.CancellationToken);
+
+        Assert.Equal(2, handlers);
+    }
+
     private static HostApplicationBuilder CreateBuilder()
     {
         var builder = Host.CreateApplicationBuilder();
@@ -159,5 +254,22 @@ public class ChromaClientExtensionsTests
         ]);
         builder.Services.AddHttpClient();
         return builder;
+    }
+
+    // Answers every request with an empty list, and keeps the requests.
+    private sealed class RecordingHandler(List<HttpRequestMessage> requests) : HttpMessageHandler
+    {
+        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        {
+            lock (requests)
+            {
+                requests.Add(request);
+            }
+
+            return Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent("[]", Encoding.UTF8, "application/json")
+            });
+        }
     }
 }

@@ -28,9 +28,9 @@ public class MyService(ChromaClient chromaClient)
 {
     public async Task QueryAsync()
     {
-        var collection = await chromaClient.GetOrCreateCollection("movies");
+        var collection = await chromaClient.GetOrCreateCollectionAsync("movies");
         var collectionClient = chromaClient.GetCollectionClient(collection);
-        var results = await collectionClient.Query(new ReadOnlyMemory<float>([0.1f, 0.2f, 0.3f]), nResults: 1);
+        var results = await collectionClient.QueryAsync(new ReadOnlyMemory<float>([0.1f, 0.2f, 0.3f]), nResults: 1);
         // ...
     }
 }

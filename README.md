@@ -24,6 +24,16 @@ Every change to the integrations is made in the pull request first; `eng/sync-fr
 
 This is a community project. It is not affiliated with or endorsed by the .NET Foundation, the Community Toolkit or Chroma.
 
+## Building and testing
+
+```bash
+dotnet build ChromaDB.Aspire.slnx
+dotnet test --project tests/CommunityToolkit.Aspire.Chroma.Tests
+dotnet test --project tests/CommunityToolkit.Aspire.Hosting.Chroma.Tests
+```
+
+The hosting tests start Chroma in Docker; the TypeScript AppHost test also needs the Aspire CLI, Node.js and PowerShell.
+
 ## License
 
 MIT, as CommunityToolkit/Aspire: see [LICENSE](LICENSE).

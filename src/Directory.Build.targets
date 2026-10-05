@@ -23,8 +23,9 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIcon>icon.png</PackageIcon>
     <PackageOutputPath>../../nuget</PackageOutputPath>
-    <PackageTags>aspire integration $(AdditionalPackageTags)</PackageTags>
-    <PackageTags Condition="'$(MSBuildProjectName)' == 'CommunityToolkit.Aspire.Chroma'">$(PackageTags) chroma chroma-cloud</PackageTags>
+    <!-- The tags of the ChromaDotNet packages, in place of those of the toolkit, as the other ChromaDotNet packages. -->
+    <PackageTags Condition="'$(MSBuildProjectName)' == 'CommunityToolkit.Aspire.Hosting.Chroma'">aspire integration hosting chroma chromadb vector-database</PackageTags>
+    <PackageTags Condition="'$(MSBuildProjectName)' == 'CommunityToolkit.Aspire.Chroma'">aspire integration client chroma chromadb chroma-cloud vector-database</PackageTags>
     <PackageTags Condition="'$(EnableAspireIntegrationAnalyzers)' == 'true'
                             and '$(IsAspirePolyglotCompatible)' != 'false'
                             and !$([System.String]::Concat(' ', '$(PackageTags)', ' ').Contains(' polyglot '))">$([System.String]::Concat('$(PackageTags)', ' polyglot').Trim())</PackageTags>

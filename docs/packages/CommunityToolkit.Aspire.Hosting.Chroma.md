@@ -1,6 +1,10 @@
+[![ChromaDotNet](https://raw.githubusercontent.com/ChromaDotNet/.github/main/assets/logo-64.png)](https://chromadotnet.org)
+
 # ChromaDotNet.Aspire.Hosting
 
 Adds a [Chroma](https://www.trychroma.com/) container to an Aspire AppHost: the `chromadb/chroma:1.5.9` image, with a health check on `/api/v2/heartbeat`.
+
+Website: [chromadotnet.org](https://chromadotnet.org)
 
 ```bash
 dotnet add package ChromaDotNet.Aspire.Hosting

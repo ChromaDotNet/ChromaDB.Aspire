@@ -3,6 +3,9 @@
   <PropertyGroup>
     <AdditionalPackageTags>ChromaDB client</AdditionalPackageTags>
     <Description>A ChromaDB client that integrates with Aspire, including health checks, traces and metrics.</Description>
+    <!-- Like the client integrations of Aspire: the settings are bound without reflection, so trimmed and native AOT apps read them. -->
+    <IsAotCompatible>true</IsAotCompatible>
+    <EnableConfigurationBindingGenerator>true</EnableConfigurationBindingGenerator>
   </PropertyGroup>
 
   <ItemGroup>

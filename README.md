@@ -22,9 +22,11 @@ Website: [chromadotnet.org](https://chromadotnet.org)
 
 ## Why this repository
 
-The code is the Chroma integration proposed to the Community Toolkit for Aspire in [CommunityToolkit/Aspire#2219](https://github.com/CommunityToolkit/Aspire/pull/2219), which continues [#1132](https://github.com/CommunityToolkit/Aspire/pull/1132) by [ali-Hamza817](https://github.com/ali-Hamza817). This repository publishes it until the toolkit ships `CommunityToolkit.Aspire.Hosting.Chroma` and `CommunityToolkit.Aspire.Chroma`; then it will be archived and the packages deprecated in their favor. The assemblies, namespaces and API are the same as in the toolkit, so moving there changes only the package references.
+The code is the Chroma integration proposed to the Community Toolkit for Aspire in [CommunityToolkit/Aspire#2219](https://github.com/CommunityToolkit/Aspire/pull/2219), which continues [#1132](https://github.com/CommunityToolkit/Aspire/pull/1132) by [ali-Hamza817](https://github.com/ali-Hamza817). This repository publishes it until the toolkit ships `CommunityToolkit.Aspire.Hosting.Chroma` and `CommunityToolkit.Aspire.Chroma`. Then this repository will be archived, and the packages deprecated in favor of those. The assemblies, namespaces and API are the same as in the toolkit, so moving changes only the package references.
 
-Every change to the integrations is made in the pull request first; `eng/sync-from-toolkit.sh` copies the Chroma folders (`src`, `tests`, `examples/chromadb`) here, so the README.md in each `src` folder is the one proposed to the toolkit, with its package ids. The READMEs of the ChromaDotNet.Aspire packages are in `docs/packages`. The build and test files come from CommunityToolkit/Aspire, adapted to publish the ChromaDotNet.Aspire packages; `docs/packages`, the CI and `eng` belong to this repository.
+Every change to the integrations goes first into that pull request. `eng/sync-from-toolkit.sh` then copies the Chroma folders (`src`, `tests`, `examples/chromadb`) here. So the README.md in each `src` folder is the one proposed to the toolkit, with its package ids, and the READMEs of the ChromaDotNet.Aspire packages are in `docs/packages`.
+
+The build and test files come from CommunityToolkit/Aspire, adapted to publish the ChromaDotNet.Aspire packages. `docs/packages`, the CI and `eng` belong to this repository.
 
 This is a community project. It is not affiliated with or endorsed by the .NET Foundation, the Community Toolkit or Chroma.
 
@@ -36,7 +38,7 @@ dotnet test --project tests/CommunityToolkit.Aspire.Chroma.Tests
 dotnet test --project tests/CommunityToolkit.Aspire.Hosting.Chroma.Tests
 ```
 
-The hosting tests start Chroma in Docker; the TypeScript AppHost test also needs the Aspire CLI, Node.js and PowerShell.
+The hosting tests start Chroma in Docker. The TypeScript AppHost test also needs the Aspire CLI, Node.js and PowerShell.
 
 ## License
 

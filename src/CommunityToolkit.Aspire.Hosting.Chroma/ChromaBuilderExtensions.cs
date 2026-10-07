@@ -13,6 +13,9 @@ public static class ChromaBuilderExtensions
     // The persist_path of the configuration in the chromadb/chroma 1.x image.
     private const string DataTarget = "/data";
 
+    // Chroma 0.x keeps its data in persist_directory, ./chroma by default, and reads it from this variable.
+    private const string PersistDirectoryVariable = "PERSIST_DIRECTORY";
+
     /// <summary>
     /// Adds a ChromaDB container resource to the application model.
     /// The default image is <inheritdoc cref="ChromaContainerImageTags.Image"/> and the tag is <inheritdoc cref="ChromaContainerImageTags.Tag"/>.
@@ -51,7 +54,8 @@ public static class ChromaBuilderExtensions
     {
         ArgumentNullException.ThrowIfNull(builder);
 
-        return builder.WithVolume(name ?? VolumeNameGenerator.Generate(builder, "data"), DataTarget);
+        return builder.WithVolume(name ?? VolumeNameGenerator.Generate(builder, "data"), DataTarget)
+            .WithEnvironment(PersistDirectoryVariable, DataTarget);
     }
 
     /// <summary>
@@ -66,6 +70,7 @@ public static class ChromaBuilderExtensions
         ArgumentNullException.ThrowIfNull(builder);
         ArgumentException.ThrowIfNullOrEmpty(source);
 
-        return builder.WithBindMount(source, DataTarget);
+        return builder.WithBindMount(source, DataTarget)
+            .WithEnvironment(PersistDirectoryVariable, DataTarget);
     }
 }

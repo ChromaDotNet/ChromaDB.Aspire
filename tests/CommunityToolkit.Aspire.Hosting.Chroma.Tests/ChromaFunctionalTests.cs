@@ -12,10 +12,13 @@ public class ChromaFunctionalTests(ITestOutputHelper testOutputHelper)
 {
     private const string CollectionName = "persisted";
 
+    // Chroma 0.x keeps its data in another folder than Chroma 1.x, the default image.
     [Theory]
-    [InlineData(true)]
-    [InlineData(false)]
-    public async Task WithDataShouldPersistStateBetweenUsages(bool useVolume)
+    [InlineData(true, null)]
+    [InlineData(false, null)]
+    [InlineData(true, "0.6.3")]
+    [InlineData(false, "0.6.3")]
+    public async Task WithDataShouldPersistStateBetweenUsages(bool useVolume, string? imageTag)
     {
         string? volumeName = null;
         string? bindMountPath = null;
@@ -24,11 +27,15 @@ public class ChromaFunctionalTests(ITestOutputHelper testOutputHelper)
         {
             using var builder1 = TestDistributedApplicationBuilder.Create(testOutputHelper);
             var chroma1 = builder1.AddChroma("chroma");
+            if (imageTag is not null)
+            {
+                chroma1.WithImageTag(imageTag);
+            }
 
             if (useVolume)
             {
                 // Use a deterministic volume name to prevent them from exhausting the machines if deletion fails
-                volumeName = VolumeNameGenerator.Generate(chroma1, nameof(WithDataShouldPersistStateBetweenUsages));
+                volumeName = VolumeNameGenerator.Generate(chroma1, $"{nameof(WithDataShouldPersistStateBetweenUsages)}{imageTag}");
 
                 // if the volume already exists (because of a crashing previous run), delete it
                 DockerUtils.AttemptDeleteDockerVolume(volumeName, throwOnFailure: true);
@@ -63,6 +70,10 @@ public class ChromaFunctionalTests(ITestOutputHelper testOutputHelper)
 
             using var builder2 = TestDistributedApplicationBuilder.Create(testOutputHelper);
             var chroma2 = builder2.AddChroma("chroma");
+            if (imageTag is not null)
+            {
+                chroma2.WithImageTag(imageTag);
+            }
 
             if (useVolume)
             {

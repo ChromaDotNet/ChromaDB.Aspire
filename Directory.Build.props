@@ -50,7 +50,7 @@
 
     <VersionPrefix>$(AspireMajorVersion).$(ToolkitMinorVersion).$(ToolkitPatchVersion)</VersionPrefix>
     <!-- ChromaDB.Aspire: the version of the ChromaDotNet.Aspire packages. -->
-    <VersionPrefix>0.2.4</VersionPrefix>
+    <VersionPrefix>0.2.5</VersionPrefix>
   </PropertyGroup>
 
   <ItemGroup>

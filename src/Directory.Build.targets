@@ -5,7 +5,7 @@
     <!-- ChromaDB.Aspire publishes the Chroma integrations of CommunityToolkit/Aspire under its own package ids. -->
     <PackageId Condition="'$(MSBuildProjectName)' == 'CommunityToolkit.Aspire.Hosting.Chroma'">ChromaDotNet.Aspire.Hosting</PackageId>
     <PackageId Condition="'$(MSBuildProjectName)' == 'CommunityToolkit.Aspire.Chroma'">ChromaDotNet.Aspire.Client</PackageId>
-    <_ChromaDotNetNote>Built from the Chroma integration proposed to the Community Toolkit for Aspire, until it ships there. Community project, not affiliated with the .NET Foundation, the Community Toolkit or Chroma.</_ChromaDotNetNote>
+    <_ChromaDotNetNote>Built from the Chroma integration proposed to the Aspire Community Toolkit, until it ships there. Community project, not affiliated with the .NET Foundation, the Aspire Community Toolkit or Chroma.</_ChromaDotNetNote>
     <!-- The descriptions of the ChromaDotNet.Aspire packages, in place of the ones in the project files of the toolkit. The client
          integration connects to Chroma Cloud too; the hosting integration runs a Chroma container. -->
     <PackageDescription Condition="'$(MSBuildProjectName)' == 'CommunityToolkit.Aspire.Hosting.Chroma'">Aspire hosting integration for Chroma: a Chroma container in the AppHost. $(_ChromaDotNetNote)</PackageDescription>

@@ -28,7 +28,7 @@ Every change to the integrations goes first into that pull request. `eng/sync-fr
 
 The build and test files come from CommunityToolkit/Aspire, adapted to publish the ChromaDotNet.Aspire packages. `docs/packages`, the CI and `eng` belong to this repository.
 
-This is a community project. It is not affiliated with or endorsed by the .NET Foundation, the Community Toolkit or Chroma.
+This is a community project. It is not affiliated with or endorsed by the .NET Foundation, the Aspire Community Toolkit or Chroma.
 
 ## Building and testing
 

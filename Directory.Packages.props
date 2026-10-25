@@ -160,7 +160,9 @@
     <PackageVersion Include="MongoDB.Driver" Version="3.9.0" />
     <!-- Override to address  https://github.com/advisories/GHSA-6c8g-7p36-r338 -->
     <PackageVersion Include="SharpCompress" Version="1.0.0" />
-    <!-- Override to address https://github.com/advisories/GHSA-qhrr-8q5h-9q3h: Aspire.Hosting brings MessagePack 2.5.302. -->
-    <PackageVersion Include="MessagePack" Version="2.5.303" />
+    <!-- Override to address https://github.com/advisories/GHSA-qhrr-8q5h-9q3h: Aspire.Hosting brings MessagePack 2.5.302
+         through StreamJsonRpc. 2.5.307 is the version that dotnet/aspire pins on main. Remove this override, and the
+         MessagePack references of the two projects, when Aspire.Hosting brings a fixed MessagePack itself. -->
+    <PackageVersion Include="MessagePack" Version="2.5.307" />
   </ItemGroup>
 </Project>

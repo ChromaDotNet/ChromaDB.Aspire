@@ -28,7 +28,7 @@ Every change to the integrations goes first into the toolkit. `eng/sync-from-too
 
 The build and test files come from CommunityToolkit/Aspire, adapted to publish the ChromaDotNet.Aspire packages. `docs/packages`, the CI and `eng` belong to this repository.
 
-This is a community project. It is not affiliated with or endorsed by Chroma.
+ChromaDotNet is an independent community project that provides .NET libraries and tools for Chroma. Independent project. Not affiliated with, endorsed by or sponsored by Chroma Inc. CHROMA is a registered trademark of Chroma Inc., used here only to describe compatibility. We use the name "Chroma" only to say which software our projects work with. It does not mean that Chroma Inc. made, approved or supports them.
 
 ## Building and testing
 

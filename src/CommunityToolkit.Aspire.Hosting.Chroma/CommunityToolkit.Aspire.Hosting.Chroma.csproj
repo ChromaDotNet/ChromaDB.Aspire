@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <AdditionalPackageTags>hosting chroma chromadb</AdditionalPackageTags>
-    <Description>ChromaDB hosting support for Aspire.</Description>
+    <Description>ChromaDB hosting support for Aspire. Independent project. Not affiliated with, endorsed by or sponsored by Chroma Inc. CHROMA is a registered trademark of Chroma Inc., used here only to describe compatibility.</Description>
   </PropertyGroup>
 
   <ItemGroup>

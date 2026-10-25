@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <AdditionalPackageTags>ChromaDB client</AdditionalPackageTags>
-    <Description>A ChromaDB client that integrates with Aspire, including health checks, traces and metrics.</Description>
+    <Description>A ChromaDB client that integrates with Aspire, including health checks, traces and metrics. Independent project. Not affiliated with, endorsed by or sponsored by Chroma Inc. CHROMA is a registered trademark of Chroma Inc., used here only to describe compatibility.</Description>
     <!-- Like the client integrations of Aspire: the settings are bound without reflection, so trimmed and native AOT apps read them. -->
     <IsAotCompatible>true</IsAotCompatible>
     <EnableConfigurationBindingGenerator>true</EnableConfigurationBindingGenerator>

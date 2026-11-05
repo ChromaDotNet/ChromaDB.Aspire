@@ -2,6 +2,23 @@
 
 # ChromaDB.Aspire
 
+> **Moved to the [Aspire Community Toolkit](https://github.com/CommunityToolkit/Aspire):** [CommunityToolkit.Aspire.Hosting.Chroma](https://www.nuget.org/packages/CommunityToolkit.Aspire.Hosting.Chroma) and [CommunityToolkit.Aspire.Chroma](https://www.nuget.org/packages/CommunityToolkit.Aspire.Chroma). These packages are deprecated and this repository is archived.
+
+If your AppHost is on Aspire 13, `ChromaDotNet.Aspire.Hosting` still works: CommunityToolkit.Aspire.Hosting.Chroma needs Aspire 17.
+
+If your service is on .NET 8 or 9, `ChromaDotNet.Aspire.Client` still works: CommunityToolkit.Aspire.Chroma needs .NET 10.
+
+## Moving
+
+The assemblies, namespaces and API are the same. Change only the package references:
+
+```bash
+dotnet remove package ChromaDotNet.Aspire.Hosting
+dotnet add package CommunityToolkit.Aspire.Hosting.Chroma --prerelease
+dotnet remove package ChromaDotNet.Aspire.Client
+dotnet add package CommunityToolkit.Aspire.Chroma --prerelease
+```
+
 [Aspire](https://aspire.dev) integrations for [Chroma](https://www.trychroma.com/):
 
 | Package | Use |
@@ -22,7 +39,7 @@ Website: [chromadotnet.org](https://chromadotnet.org)
 
 ## Why this repository
 
-The code is the Chroma integration accepted in the Aspire Community Toolkit with [CommunityToolkit/Aspire#2219](https://github.com/CommunityToolkit/Aspire/pull/2219), which continues [#1132](https://github.com/CommunityToolkit/Aspire/pull/1132) by [ali-Hamza817](https://github.com/ali-Hamza817). This repository publishes it until the toolkit ships `CommunityToolkit.Aspire.Hosting.Chroma` and `CommunityToolkit.Aspire.Chroma`. Then this repository will be archived, and the packages deprecated in favor of those. The assemblies, namespaces and API are the same as in the toolkit, so moving changes only the package references.
+The code is the Chroma integration accepted in the Aspire Community Toolkit with [CommunityToolkit/Aspire#2219](https://github.com/CommunityToolkit/Aspire/pull/2219), which continues [#1132](https://github.com/CommunityToolkit/Aspire/pull/1132) by [ali-Hamza817](https://github.com/ali-Hamza817). This repository published it until the toolkit shipped `CommunityToolkit.Aspire.Hosting.Chroma` and `CommunityToolkit.Aspire.Chroma`. The assemblies, namespaces and API are the same as in the toolkit, so moving changes only the package references.
 
 Every change to the integrations goes first into the toolkit. `eng/sync-from-toolkit.sh` then copies the Chroma folders (`src`, `tests`, `examples/chromadb`) here. So the README.md in each `src` folder is the toolkit's, with its package ids, and the READMEs of the ChromaDotNet.Aspire packages are in `docs/packages`.
 

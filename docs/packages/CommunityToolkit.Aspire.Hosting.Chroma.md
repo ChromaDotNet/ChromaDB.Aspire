@@ -2,6 +2,19 @@
 
 # ChromaDotNet.Aspire.Hosting
 
+> **Moved to [CommunityToolkit.Aspire.Hosting.Chroma](https://www.nuget.org/packages/CommunityToolkit.Aspire.Hosting.Chroma)**, in the [Aspire Community Toolkit](https://github.com/CommunityToolkit/Aspire). This package is deprecated and gets no more releases.
+
+If your AppHost is on Aspire 13, this package still works: CommunityToolkit.Aspire.Hosting.Chroma needs Aspire 17.
+
+## Moving
+
+The namespaces and API are the same. Change only the package reference:
+
+```bash
+dotnet remove package ChromaDotNet.Aspire.Hosting
+dotnet add package CommunityToolkit.Aspire.Hosting.Chroma --prerelease
+```
+
 Adds a [Chroma](https://www.trychroma.com/) container to an Aspire AppHost: the `chromadb/chroma:1.5.9` image, with a health check on `/api/v2/heartbeat`.
 
 Website: [chromadotnet.org](https://chromadotnet.org)
@@ -23,4 +36,4 @@ builder.AddProject<Projects.ApiService>("api")
 
 `AddChroma` takes an optional `port`, the host port of the container; without it the port is assigned at run time. The resource gives the connection string `Endpoint=http://{host}:{port}` and the connection properties `Host`, `Port` and `Uri`. The methods are exported to TypeScript AppHosts too (`addChroma`, `withDataVolume`, `withDataBindMount`), as in [the example](https://github.com/ChromaDotNet/ChromaDB.Aspire/blob/main/examples/chromadb/CommunityToolkit.Aspire.Hosting.Chroma.AppHost.TypeScript/apphost.mts).
 
-This is the Chroma hosting integration accepted in the Aspire Community Toolkit ([CommunityToolkit/Aspire#2219](https://github.com/CommunityToolkit/Aspire/pull/2219)), published by ChromaDotNet until the toolkit ships it as `CommunityToolkit.Aspire.Hosting.Chroma`. The API and namespaces are the same, so moving to that package only changes the package reference. Community project, not affiliated with Chroma.
+This is the Chroma hosting integration accepted in the Aspire Community Toolkit ([CommunityToolkit/Aspire#2219](https://github.com/CommunityToolkit/Aspire/pull/2219)), published by ChromaDotNet until the toolkit shipped it as `CommunityToolkit.Aspire.Hosting.Chroma`. The API and namespaces are the same, so moving to that package only changes the package reference. Community project, not affiliated with Chroma.
